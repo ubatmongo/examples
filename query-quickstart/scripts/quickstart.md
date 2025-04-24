@@ -306,3 +306,76 @@ bazel query 'attr(tags, "pizza", //...)  # attr(<type_of_attr>, <value_of_attr>,
 //src/main/java/com/example/customers:amir
 //src/main/java/com/example/reviews:review
 ```
+
+### After update
+
+```bash
+bazel query --noimplicit_deps --notool_deps  "deps(//:runner)" --output graph | dot -Tsvg > after_new_deps.svg
+```
+
+#### package to package path
+
+```bash
+$ bazel query "somepath('//src/main/java/com/example/restaurant:chef', '//src/main/java/com/example/ingredients/...')"
+---
+//src/main/java/com/example/restaurant:chef
+//src/main/java/com/example/dishes:macAndCheese
+//src/main/java/com/example/ingredients:cheese
+
+
+$ bazel query "somepath('//src/main/java/com/example/restaurant:chef', '//src/main/java/com/example/ingredients/...')"
+---
+//src/main/java/com/example/restaurant:chef
+//src/main/java/com/example/dishes:macAndCheese
+//src/main/java/com/example/ingredients:cheese
+
+
+$ bazel query "somepath('//src/main/java/com/example/restaurant/...', '//src/main/java/com/example/ingredients/...')"
+---
+//src/main/java/com/example/restaurant:chef
+//src/main/java/com/example/dishes:macAndCheese
+//src/main/java/com/example/ingredients:cheese
+```
+
+
+### Test
+
+```bash
+bazel build //src/main/java/com/example/reviews:review                                                                                                                    [14:39:59]
+INFO: Analyzed target //src/main/java/com/example/reviews:review (81 packages loaded, 3910 targets configured).
+INFO: Found 1 target...
+Target //src/main/java/com/example/reviews:review up-to-date:
+  bazel-bin/src/main/java/com/example/reviews/review
+  bazel-bin/src/main/java/com/example/reviews/review.jar
+INFO: Elapsed time: 2.550s, Critical Path: 0.92s
+INFO: 8 processes: 2 action cache hit, 5 internal, 1 darwin-sandbox, 2 worker.
+INFO: Build completed successfully, 8 total actions
+```
+
+```bash
+bazel-bin/src/main/java/com/example/reviews/review
+My dish was delicious! (5/5)
+```
+
+```bash
+bazel query --noimplicit\_deps 'deps(//src/main/java/com/example/reviews:review)'
+//src/main/java/com/example/customers:Amir.java
+//src/main/java/com/example/customers:amir
+//src/main/java/com/example/reviews:Review.java
+//src/main/java/com/example/reviews:review
+@bazel_tools//tools/jdk:launcher_flag_alias
+```
+
+```bash
+bazel query --noimplicit_deps 'deps(//src/main/java/com/example/reviews:review)'
+//src/main/java/com/example/customers:Amir.java
+//src/main/java/com/example/customers:amir
+//src/main/java/com/example/reviews:Review.java
+//src/main/java/com/example/reviews:review
+@bazel_tools//tools/jdk:launcher_flag_alias
+```
+
+```bash
+bazel query 'attr(tags, "pizza", //src/main/java/com/example/customers/...)'
+//src/main/java/com/example/customers:amir
+```
