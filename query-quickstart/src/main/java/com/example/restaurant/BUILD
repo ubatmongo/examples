@@ -9,6 +9,7 @@ java_library(
     deps = [
         "//src/main/java/com/example/dishes:macAndCheese",
         "//src/main/java/com/example/dishes:pizza",
+        "//src/main/java/com/example/dishes:smoothie",
     ],
 )
 

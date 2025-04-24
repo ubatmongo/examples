@@ -20,3 +20,13 @@ java_library(
         "//src/main/java/com/example/ingredients:tomato",
     ],
 )
+
+java_library(
+    name = "smoothie",
+    deps = [
+        "//src/main/java/com/example/ingredients:strawberry",
+        "//src/main/java/com/example/ingredients:banana",
+    ],
+    srcs = ["Smoothie.java"],
+    visibility = ["//visibility:public"],
+)
